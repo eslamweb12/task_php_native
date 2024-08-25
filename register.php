@@ -1,38 +1,29 @@
-
 <?php  
-
 session_start();
 
 include_once 'model/userModel.php';
 include_once 'connection/connectTODB.php';
 
-$title="register";
+$title = "Register";
 
-
-
-if($_SERVER['REQUEST_METHOD']=='POST'){
-    
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     include_once 'validation/validationRegister.php';
-    
-    
 
     if (empty($usernameError) && empty($emailError) && empty($passwordError)) {
-        register($_POST['username'],$_POST['email'],$_POST['password']);
-        $_SESSION['welcom']='welcom';
-
-        header('location:index.php');
-    
+        $user_id = register($_POST['username'], $_POST['email'], $_POST['password']);
         
-    
-    exit; 
+        if ($user_id) {
+            $_SESSION['id'] = $user_id;
+            $_SESSION['type'] = 'client'; // Set type for new users
+            $_SESSION['welcom'] = 'Welcome';
+        
+            header('Location: index.php');
+            exit();
+        } else {
+            echo "Registration failed. Please try again.";
+        }
     }
-    
-
-
-
 }
-
-
 
 include_once "layouts/header.php";
 ?>
